@@ -1,0 +1,19 @@
+body {
+  font-family: sans-serif;
+  background-color: #f0f8ff;
+  max-width: 900px;
+  margin: auto;
+}
+#legend {
+  line-height: 0px;
+  background: #e6e6fa;
+  color: #602040;
+  border: solid;
+  border-width: 4px;
+  opacity: 0.90;
+  padding:5px 25px 5px 0px;
+}
+p {
+  font-family: sans-serif;
+  color: #602040;
+}

@@ -1,0 +1,105 @@
+<html>
+<head>
+	<title>Lab 2 - Part 2</title>
+	<link href="styles.css" rel="stylesheet" type="text/css">
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+	<!-- the Leaflet JavaScript library -->
+	<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+	<!-- the Leaflet geoJSON Querying library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- the Leaflet Legend library -->
+	<script src= "https://cdn.jsdelivr.net/npm/leaflet-legend@1.0.2/leaflet-legend.min.js"></script>
+
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+	 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+ </head>
+
+ </body>
+</head>
+
+<body>
+	<p> <br> </p>
+	<h1 style="color:#602040;text-align:center;">Significant Volcanic Eruptions and Pierce County Hazardous Zone</h1>
+		<!-- code where we create and name the container that holds the map -->
+	<div id="map" style="height: 80%"></div>
+		<!-- code where we build the map and its functionality -->
+	<p>This map depicts a databese of over 500 significant volcanic eruptions. The map includes data on latitude, longtitude, elevation, type of volcano, and last known eruption. Data comes from the <a href="https://data.noaa.gov/metaview/page?xml=NOAA/NESDIS/NGDC/MGG/Hazards/iso/xml/G012153.xml&view=getDataView">Significant Volcanic Eruption Database</a>. The significance of the volanic erution is classified by at least one of the following criteria: caused fatalities, caused tsunami, caused moderate damage (approximately $1 million or more), was assosiated with a major earthquake, or had a Volcanic Explosivity Index (VEI) of 6 or larger.</p>
+	<p>Blue polygons represent data from <a href="https://geohub.cityoftacoma.org/datasets/1370a696591f4971b18090fe8c777b5f_0?geometry=-122.552%2C46.808%2C-120.605%2C47.462">Pierce County Planning and Land Services</a>. It is intended for use by the public to make maps of volcanic hazards. Understanding the boundaries of the hazard zones raises awareness in recurring volcanic events.</p>
+	<h2 style="color:#602040;text-align:center;">References:</h2>
+	<p>1. Volcanic Hazards (Pierce County. Retrieved from <a href="https://geohub.cityoftacoma.org/datasets/1370a696591f4971b18090fe8c777b5f_0?geometry=-123.549%2C46.808%2C-119.608%2C47.462"> City of Tacoma, Washington </a></p>
+	<p>2. Significant Volcanic Eruption Database. Retrieved from <a href="https://public.opendatasoft.com/explore/dataset/significant-volcanic-eruption-database/information/?sort=-year&q=tsunami&dataChart=eyJxdWVyaWVzIjpbeyJjb25maWciOnsiZGF0YXNldCI6InNpZ25pZmljYW50LXZvbGNhbmljLWVydXB0aW9uLWRhdGFiYXNlIiwib3B0aW9ucyI6eyJiYXNlbWFwIjoiamF3Zy5zdHJlZXRzIiwibG9jYXRpb24iOiIzLDUyLjIxNDM0LC01Mi41NTg1OSJ9fSwiY2hhcnRzIjpbeyJhbGlnbk1vbnRoIjp0cnVlLCJ0eXBlIjoiY29sdW1uIiwiZnVuYyI6IkFWRyIsInlBeGlzIjoieWVhciIsInNjaWVudGlmaWNEaXNwbGF5Ijp0cnVlLCJjb2xvciI6IiNGRjUxNUEifV0sInhBeGlzIjoidHN1IiwibWF4cG9pbnRzIjo1MCwic29ydCI6IiJ9XSwidGltZXNjYWxlIjoiIiwiZGlzcGxheUxlZ2VuZCI6dHJ1ZSwiYWxpZ25Nb250aCI6dHJ1ZX0%3D&location=2,58.1707,-53.78906&basemap=jawg.streets"> https://public.opendatasoft.com </a></p>
+
+	<div id="legend">
+		<h3><center>Volcanic Eruptions by Year</center></h3>
+		<ul style="list-style-type:none">
+			<li>
+				<svg width="24" height="24">
+					<circle cx="12" cy="20" r="2" stroke="red" stroke-width="o.5" fill="red" fill-opacity=".4"/>
+				</svg>
+				<text>From 420 AD</text>
+			</li>
+			<li>
+				<svg width="24" height="24">
+					<circle cx="12" cy="19" r="2" stroke="black" stroke-width="0.5" fill="rblsck" fill-opacity=".4"/>
+				</svg>
+				<text>Between 420 AD and 1180 BC</text>
+			</li>
+			<li>
+				<svg width="24" height="24">
+					<circle cx="12" cy="18" r="2" stroke="green" stroke-width="0.5" fill="green" fill-opacity=".4"/>
+				</svg>
+				<text>Between 1180 BC and 2780 BC</text>
+			</li>
+			<li>
+				<svg width="24" height="24">
+					<circle cx="12" cy="18" r="2" stroke="blue" stroke-width="0.5" fill="blue" fill-opacity=".4"/>
+				</svg>
+				<text x="0" y="0)">Before 2780 BC</text>
+			</li>
+		</ul>
+	</div>
+
+	<script>
+		var mymap = L.map('map').setView([47.258, -122.465], 7);
+		mymap.addControl(new L.Control.Fullscreen({ // fullscreen plugin use
+		title: {
+				'false': 'View Fullscreen',
+				'true': 'Exit Fullscreen'
+		}}));
+		var basemap = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png', {
+			attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		}).addTo(mymap);
+			// load GeoJSON from an external file and add it to the map
+			$.getJSON("eruptions.json",function(data){
+				// add GeoJSON layer to the map once the file is loaded
+					L.geoJson(data, {
+						pointToLayer: function(feature, latlng){
+								var year,
+								year = feature.properties.year;
+								if (year > 420) fillColor = "red";
+								else if ( year > -1180) fillColor = "black";
+								else if (year > -2780) fillColor = "green";
+								else fillColor = "blue";
+								var marker = L.circleMarker(latlng, {radius: 3, color: fillColor});
+								marker.bindPopup("Year: " + feature.properties.year + "<br>Country: " + feature.properties.country + "<br>Location: " + feature.properties.coordinates + "<br>Name: " + feature.properties.name + "<br>Volcano Type: " + feature.properties.type + "<br>Elevation: " + feature.properties.elevation +"<br>VEI: " + feature.properties.vei + "<br>Total Death: " + feature.properties.deaths_description);
+								return marker;
+							}
+					}).addTo(mymap);
+			});
+			// load GeoJSON from an external file and add it to the map
+			$.getJSON("https://opendata.arcgis.com/datasets/1370a696591f4971b18090fe8c777b5f_0.geojson",function(data){
+				// add GeoJSON layer to the map once the file is loaded
+					L.geoJson(data).addTo(mymap);
+			});
+
+			var Legend =  new L.Control.Legend({
+			position: 'bottomright',
+			});
+			mymap.addControl(Legend);
+			$(".legend-container").append( $("#legend") )
+
+		</script>
+
+</body>
+</html>
