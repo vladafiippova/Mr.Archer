@@ -77,8 +77,6 @@
 		var basemap = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png', {
 			attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 		}).addTo(mymap);
-		var point = L.marker([47.258, -122.465]).addTo(mymap);
-			point.bindPopup("<b>Hello world!</b><br>I am a popup.");
 			// load GeoJSON from an external file and add it to the map
 			$.getJSON("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",function(data){
 				// add GeoJSON layer to the map once the file is loaded
