@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lab 3</title>
+	<link href="styles.css" rel="stylesheet" type="text/css">
+		<!-- insert Mapbox GL library links here -->
+
+		<script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
+		<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+		<link	rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+		type="text/css"/>
+
+		<style>
+		#map1 {height: 95vh;}
+		#map2 {height: 95vh}
+		.marker {
+			  background-image: url('marker.jpg');
+			  background-size: cover;
+			  width: 25px;
+			  height: 25px;
+			  border-radius: 50%;
+			  cursor: pointer;
+			}
+			.mapboxgl-popup {
+				  max-width: 200px;
+				}
+
+				.mapboxgl-popup-content {
+				  text-align: center;
+				  font-family: 'Open Sans', sans-serif;
+				}
+		</style>
+	</head>
+
+	<body>
+		<p> <br> </p>
+			<h1 style="color:#602040;text-align:center;">Significant Volcanic Eruptions and Pierce County Hazardous Zone</h1>
+				<!-- code where we create and name the container that holds the map -->
+
+				<div id='map1'></div>
+
+				<!-- code where we build the map and its functionality -->
+			<p>This map depicts a databese of over 500 significant volcanic eruptions. The map includes data on latitude, longtitude, elevation, type of volcano, and last known eruption. Data comes from the <a href="https://data.noaa.gov/metaview/page?xml=NOAA/NESDIS/NGDC/MGG/Hazards/iso/xml/G012153.xml&view=getDataView">Significant Volcanic Eruption Database</a>. The significance of the volanic erution is classified by at least one of the following criteria: caused fatalities, caused tsunami, caused moderate damage (approximately $1 million or more), was assosiated with a major earthquake, or had a Volcanic Explosivity Index (VEI) of 6 or larger. Use the zoom feature to see volacanic eruptions around the world.</p>
+			<p>Red polygons represent data from <a href="https://geohub.cityoftacoma.org/datasets/1370a696591f4971b18090fe8c777b5f_0?geometry=-122.552%2C46.808%2C-120.605%2C47.462">Pierce County Planning and Land Services</a>. It is intended for use by the public to make maps of volcanic hazards. Understanding the boundaries of the hazard zones raises awareness in recurring volcanic events.</p>
+
+			<h2 style="color:#602040;text-align:center;">US National Parks</h2>
+
+			<div id="map2"> </div>
+
+			<p>This map depicts administrative boundaries of National Park System Units. Data comes from the <a href="https://irma.nps.gov/DataStore/Reference/Profile/2225713">National Park Service</a>. This data can be correlated with the Volcanic Eruption Data. Custom marker represents volcanoes located in WA.</p>
+
+			<h3 style="color:#602040;text-align:center;">References:</h3>
+			<p>1. Volcanic Hazards (Pierce County. Retrieved from <a href="https://geohub.cityoftacoma.org/datasets/1370a696591f4971b18090fe8c777b5f_0?geometry=-123.549%2C46.808%2C-119.608%2C47.462"> City of Tacoma, Washington </a></p>
+			<p>2. Significant Volcanic Eruption Database. Retrieved from <a href="https://public.opendatasoft.com/explore/dataset/significant-volcanic-eruption-database/information/?sort=-year&q=tsunami&dataChart=eyJxdWVyaWVzIjpbeyJjb25maWciOnsiZGF0YXNldCI6InNpZ25pZmljYW50LXZvbGNhbmljLWVydXB0aW9uLWRhdGFiYXNlIiwib3B0aW9ucyI6eyJiYXNlbWFwIjoiamF3Zy5zdHJlZXRzIiwibG9jYXRpb24iOiIzLDUyLjIxNDM0LC01Mi41NTg1OSJ9fSwiY2hhcnRzIjpbeyJhbGlnbk1vbnRoIjp0cnVlLCJ0eXBlIjoiY29sdW1uIiwiZnVuYyI6IkFWRyIsInlBeGlzIjoieWVhciIsInNjaWVudGlmaWNEaXNwbGF5Ijp0cnVlLCJjb2xvciI6IiNGRjUxNUEifV0sInhBeGlzIjoidHN1IiwibWF4cG9pbnRzIjo1MCwic29ydCI6IiJ9XSwidGltZXNjYWxlIjoiIiwiZGlzcGxheUxlZ2VuZCI6dHJ1ZSwiYWxpZ25Nb250aCI6dHJ1ZX0%3D&location=2,58.1707,-53.78906&basemap=jawg.streets">National Geophysical Data Center</a></p>
+			<p>3. US National Parks Boundaries. Retrieved from <a href="https://irma.nps.gov/DataStore/Reference/Profile/2225713">National Park Service</a></p>
+
+
+		<!-- JS code for the map goes here -->
+		<script>
+					//copy your access token here
+					mapboxgl.accessToken = 'pk.eyJ1IjoidmxmaWxpcHBvdmEiLCJhIjoiY2tpdW5nNGwxMDE0bjJxcXJqcGkwOXZneCJ9.zPiPMNTjeoVfJ9HOswi_0g';
+
+					var map1 = new mapboxgl.Map({
+					  container: 'map1', // HTML container id
+					  style: 'mapbox://styles/mapbox/streets-v11', // style URL
+					  center: [-120, 48], // starting position as [lng, lat]
+					  zoom: 6 // starting zoom
+					});
+
+					var map2 = new mapboxgl.Map({
+		        container: "map2",
+		        style: "mapbox://styles/vlfilippova/ckiutpo870w0w19mtxq2hdd2f", // import custom style
+		        center: [-95, 35],
+		        zoom: 3.1
+		      });
+
+//Add GeoJSON layer
+//on map load, run function to load the geojson
+					map1.on('load', function(){
+						map1.addSource('hazards', {
+									"type": "geojson",
+									"data": "Volcanic_Hazards__Pierce_County_.geojson.json"
+							});
+						map1.addLayer({
+								"id":"county",
+								"type":"fill",
+								"source":"hazards",
+								"paint": {
+									"fill-color": "#cc6666",
+									"fill-opacity": 0.5,
+									"fill-outline-color": "#862d2d"
+								}
+							});
+					});
+
+							map1.on('click', 'county', function (e) {
+								new mapboxgl.Popup()
+								.setLngLat(e.lngLat)
+								.setHTML("Object: " + "<b>" + e.features[0].properties.OBJECTID + "</b>" + "<br>" + "Area: " + "<b>" + e.features[0].properties.SHAPE_Area + "</b>")
+								.addTo(map1);
+								});
+
+								map1.on('mouseenter', 'county', function () {
+									map1.getCanvas().style.cursor = 'pointer';
+									});
+
+									// Change it back to a pointer when it leaves.
+									map1.on('mouseleave', 'county', function () {
+									map1.getCanvas().style.cursor = '';
+									});
+
+					map1.on('load', function(){
+						map1.addSource('eruptions', {
+									"type": "geojson",
+									"data": "eruptions.json"
+							});
+							map1.addLayer({
+								"id":"volcanic",
+								"type":"circle",
+								"source":"eruptions",
+								"paint": {
+									"circle-color": "#862d2d",
+									"circle-opacity": 0.9,
+							}
+							});
+					});
+
+			map1.on('click', 'volcanic', function (e) {
+				new mapboxgl.Popup()
+				.setLngLat(e.lngLat)
+				.setHTML("Year: " + "<b>" + e.features[0].properties.year + "</b>" + "<br>" + "Name: " + "<b>" + e.features[0].properties.name + "</b>")
+				.addTo(map1);
+				});
+
+				map1.on('mouseenter', 'volcanic', function () {
+					map1.getCanvas().style.cursor = 'pointer';
+					});
+
+					// Change it back to a pointer when it leaves.
+					map1.on('mouseleave', 'volcanic', function () {
+					map1.getCanvas().style.cursor = '';
+					});
+
+					map1.addControl(
+							new MapboxGeocoder({
+							accessToken: mapboxgl.accessToken,
+							mapboxgl: mapboxgl
+							})
+							);
+
+			   map1.addControl(new mapboxgl.NavigationControl());
+
+
+					map1.addControl(
+							 new mapboxgl.GeolocateControl({
+							 positionOptions: {
+							 enableHighAccuracy: true
+							},
+							trackUserLocation: true
+							 })
+							 );
+
+							 var geojson = {
+			 				  type: 'FeatureCollection',
+			 				  features: [{
+			 				  type: 'Feature',
+			 				  geometry: {
+			 				  type: 'Point',
+			 				   coordinates: [-121.8144, 48.7767]
+			 				  },
+			 				    properties: {
+			 				      title: 'Volcano:',
+			 				      description: 'Mount Baker'
+			 				    }
+			 				  },
+			 				  {
+			 				    type: 'Feature',
+			 				    geometry: {
+			 				      type: 'Point',
+			 				      coordinates: [-121.760, 46.852]
+			 				    },
+			 				    properties: {
+			 				      title: 'Volcano:',
+			 				      description: 'Mount Rainier'
+			 				    }
+			 				  }]
+			 				};
+							// add markers to map
+							geojson.features.forEach(function(marker) {
+
+							  // create a HTML element for each feature
+							  var el = document.createElement('div');
+							  el.className = 'marker';
+
+							  // make a marker for each feature and add to the map
+							  new mapboxgl.Marker(el)
+							    .setLngLat(marker.geometry.coordinates)
+									.setPopup(new mapboxgl.Popup({ offset: 25 })
+							    .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p>'))
+							    .addTo(map2);
+							});
+
+					map2.on('load', function(){
+						map2.addSource('parks', {
+									"type": "geojson",
+									"data": "us_nps.json"
+							});
+							map2.addLayer({
+								"id":"national",
+								"type":"fill",
+								"source":"parks",
+								"paint": {
+									"fill-color": "#cc6666",
+									"fill-opacity": 0.7,
+									"fill-outline-color": "#862d2d"
+								}
+							});
+					});
+
+					map2.on('click', 'national', function (e) {
+						new mapboxgl.Popup()
+						.setLngLat(e.lngLat)
+						.setHTML("Name: " + "<b>" + e.features[0].properties.unit_name + "</b>" + "<br>" + "State: " + "<b>" + e.features[0].properties.state + "</b>")
+						.addTo(map2);
+						});
+
+						map2.on('mouseenter', 'national', function () {
+							map2.getCanvas().style.cursor = 'pointer';
+							});
+
+							// Change it back to a pointer when it leaves.
+							map2.on('mouseleave', 'national', function () {
+							map2.getCanvas().style.cursor = '';
+							});
+
+							map2.addControl(
+									new MapboxGeocoder({
+									accessToken: mapboxgl.accessToken,
+									mapboxgl: mapboxgl
+									})
+									);
+
+					   map2.addControl(new mapboxgl.NavigationControl());
+
+							map2.addControl(
+								   new mapboxgl.GeolocateControl({
+									 positionOptions: {
+									 enableHighAccuracy: true
+								 	},
+									trackUserLocation: true
+									 })
+									 );
+
+		</script>
+
+			<center> <p style="font-family: "Lucida Grande", sans-serif;"> <a href="https://vladafilippova.github.io/TGIS503/"> <br> Back to my Home Page <br></a></p> </center>
+
+	</body>
+</html>
